@@ -12,6 +12,12 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
 
+  final TextEditingController _searchController = TextEditingController();
+  String searchGrocery = ''; 
+
+  
+  
+//Fucntion
   void onCreate() async {
     // Navigate to the form screen using the Navigator push
     Grocery? newGrocery = await Navigator.push<Grocery>(
@@ -27,26 +33,62 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = const Center(child: Text('No items added yet.'));
+    
 
-    if (dummyGroceryItems.isNotEmpty) {
+    //display groceries
+    Widget _buildAllGrocery(){
       //  Display groceries with an Item builder and  LIst Tile
-      content = ListView.builder(
+      return ListView.builder(
         itemCount: dummyGroceryItems.length,
-        itemBuilder: (context, index) =>
-            GroceryTile(grocery: dummyGroceryItems[index]),
+        itemBuilder: (context, index){
+        final grocery = dummyGroceryItems[index];
+        return GroceryTile(grocery: grocery);
+        },
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Groceries'),
-        actions: [IconButton(onPressed: onCreate, icon: const Icon(Icons.add))],
-      ),
-      body: content,
+    //search groceries
+    widget _searchGrocery(){
+      final filteredGroceries = dummyGroceryItems.where((grocery) {
+      if (searchGrocery.isEmpty) return true;
+
+
+    }
+    
+    
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Groceries'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: onCreate,
+            ),
+          ],
+        ),
+        bottomNavigationBar: const TabBar(
+          tabs: [
+            Tab(
+              icon: Icon(Icons.local_grocery_store),
+              text: 'All',
+            ),
+            Tab(
+              icon: Icon(Icons.search),
+              text: 'Search',
+            ),
+            body: TabBarView(children: [
+              _buildAllGrocery(),
+            ])
+          ],
+          
+      ) ,
+      )
     );
   }
 }
+
 
 class GroceryTile extends StatelessWidget {
   const GroceryTile({super.key, required this.grocery});
